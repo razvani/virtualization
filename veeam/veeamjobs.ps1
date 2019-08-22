@@ -1,3 +1,7 @@
+#### VEEAM job creation   ####
+#### by Razvan Irimia     ####
+
+
 $ImportFile = '.\veeamjobs.csv'
 Import-csv $ImportFile -delimiter ";" | ForEach-Object {
 
