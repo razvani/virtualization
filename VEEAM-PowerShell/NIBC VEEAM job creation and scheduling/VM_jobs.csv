@@ -1,3 +1,0 @@
-MIGhost,MIGdatastore,VMname,NIBCvCenter,IterationName,SourceProxy01,SourceProxy02,PrimaryJob,AfterJobName,DailyAt,
-migbehaesx01.cegekamig.local,NIBC_BEHA_ST2_002_ODC,josacpc401,172.18.2.226,NIBC-ITERATION-03_Razvan02,svnibcveep001.prd.domain,svnibcveep002.prd.domain,No,NIBC-ITERATION-03-JOSACPC401,,
-migbehaesx01.cegekamig.local,NIBC_BEHA_ST2_002_ODC,josacpc401,172.18.2.226,NIBC-ITERATION-03_Razvan01,svnibcveep001.prd.domain,svnibcveep002.prd.domain,Yes,,"12:12",
