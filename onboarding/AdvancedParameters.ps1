@@ -1,4 +1,8 @@
-﻿### VM Information ###
+### Connect-vCenter ###
+
+Connect-VIServer -Server sharebehavcsa002.cegekavirtual.local -User admin.jeroenl -AllLinked
+
+### VM Information ###
 
 $VMName = Read-Host "VMName e.g. CI000000-VMName"
 
