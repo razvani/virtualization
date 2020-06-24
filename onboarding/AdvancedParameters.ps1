@@ -1,6 +1,6 @@
 ### Connect-vCenter ###
 
-Connect-VIServer -Server sharebehavcsa002.cegekavirtual.local -User admin.jeroenl -AllLinked
+Connect-VIServer -Server vcenter.somedomain.local -User admin.jeroenl -AllLinked
 
 ### VM Information ###
 
