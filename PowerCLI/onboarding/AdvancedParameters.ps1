@@ -1,6 +1,6 @@
 # VARS
-$VIServerName = "sharbehavcsa002.cegekavirtual.local"
-$VIUser = "admin.jeroenl"
+$VIServerName = "vcenter.domain.com"
+$VIUser = "username"
 
 ### VM Information ###
 $VMNames = @("SERVER001", "SERVER002", "SERVER003", "SERVER004", "SERVER005")
