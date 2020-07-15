@@ -1,9 +1,10 @@
 <#
 
-In ordert to run this script on a scheduled basis following things need to be taken into account. 
+A few settings need to be adapted before running this script / scheduled task:
 
-    1. Create a BASIC user (sa_ad_read)
-    2. Update the default domain policy 
+    1. Create a BASIC domain user (sa_ad_read)
+    2. Update the default domain policy (GPO)
+    
         Computer Configuration \ Policies \ Windows Settings \ Security Settings \ Local Policies \ User Rights Assignment
 
             Log on as a batch job "POCVIRTUAL\sa_ad_read"
