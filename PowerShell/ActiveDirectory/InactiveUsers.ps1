@@ -83,4 +83,4 @@ Start-Sleep -Seconds 30
 
 ### Send Mail ###
 
-Send-MailMessage -From $From -To $To -Subject $Subject -Body $Body -Attachments $FileName -SmtpServer $SMTPServer
+Send-MailMessage -From $From -To $To -Subject $Subject -Body $Body -Attachments $Attachment -SmtpServer $SMTPServer
