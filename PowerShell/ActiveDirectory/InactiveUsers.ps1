@@ -49,7 +49,7 @@ $TimeStamp = Get-Date -Format "yyyyMMdd"
 
 ### Location ###
 
-$Location = "E:\Scripts\Exports\"
+$Location = "E:\Scripts\Exports\" #can be another location if the E:\ does not exist. When changing the location, do not forget to change the scheduled task. 
 $FileName = "$Location" + "$TimeStamp" + " InactiveUsers.csv"
 $NetBIOSName = (Get-ADDomain).NetBIOSName
 $Hostname = Hostname
