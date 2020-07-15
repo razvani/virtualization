@@ -59,7 +59,7 @@ $Hostname = Hostname
 
 $From = "Virtualisatie <virtualisatie@cegeka.com>"
 $To = "Virtualisatie <virtualisatie@cegeka.com>"
-$Subject = "[PROACTIVE MANAGEMENT] - " + "$NetBIOSName" + " - Users attached to this mail have not logged on since " + "$DaysInactive" + " Days"
+$Subject = "[PROACTIVE MANAGEMENT] - " + "$NetBIOSName" + " - Users attached to this mail have not logged on since " + "$DaysOfInactivity" + " Days"
 
 $Body = @"
 Dear Co, 
