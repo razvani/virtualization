@@ -23,7 +23,7 @@ In ordert to run this script on a scheduled basis following things need to be ta
         
         Trigger 
         
-            monthly 01-01-2020 at 0:01:00)
+            monthly 01-01-2020 at 0:01:00
 
         Action
 
