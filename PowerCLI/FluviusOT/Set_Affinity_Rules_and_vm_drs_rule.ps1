@@ -3,34 +3,7 @@
    This script will create all the rules (affinity and anti-affinity) based on a CSV file needed for the customer FluviusOT
    The CSV file is the same as the one for deploying vm's at FluviusOT.
 #>
-function Verb-Noun
-{
-    [CmdletBinding()]
-    [Alias()]
-    [OutputType([int])]
-    Param
-    (
-        # Param1 help description
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        $Param1,
 
-        # Param2 help description
-        [int]
-        $Param2
-    )
-
-    Begin
-    {
-    }
-    Process
-    {
-    }
-    End
-    {
-    }
-}
 Function Connection-vCenter
 {
 
