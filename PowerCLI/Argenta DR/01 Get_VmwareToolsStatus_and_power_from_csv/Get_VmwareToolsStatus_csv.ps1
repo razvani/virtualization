@@ -45,17 +45,18 @@ set-location $PSScriptRoot
 #Clearing the default error arrayr as it will be checked later in the script and mailed if it contains data.
 $error.clear()
 
-
+#Vcenter that will be used to connect to.
 #$vcenter="pocbehavcsa001.pocvirtual.local"
 $vcenter="sharbehavcsa003.cegekavirtual.local"
 #$vcenter="argbehavcsa001argvirtual.local"
+#The name of the file where all data will be saved in.
 $VmwareToolsStatus="VmwareToolsStatus.csv"
 $counter=1
 
 Write-host -ForegroundColor Green "Enter your username and password to make a connection to $vcenter"
 $vCenterCredentials = Get-Credential -Message "Enter your username name and password for $vcenter"
 
-#Importing CSV file
+#Importing CSV file that contains the list of vm's.
 Write-Host -ForegroundColor Yellow "Importing CSV file"
 $DataFile = "poweroff_vms.csv"
 $DataContent = Import-Csv -Path $DataFile -Delimiter ";" | Sort-Object Location -Descending
