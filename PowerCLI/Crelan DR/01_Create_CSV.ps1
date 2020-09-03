@@ -5,7 +5,8 @@
    When entering all VIRP CI's in the array VIRPs this script will check all datastores linked to those CI's based on the CI number infront of the Datastore name. 
    $datastores array will be created with all Datastores found. All VM's info will be saved and exported for each entry in Datastore array.
 .EXAMPLE
-   Example of how to use this cmdlet          .\01_Create_CSV.ps1
+   Example of how to use this cmdlet
+   .\01_Create_CSV.ps1
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
@@ -34,7 +35,7 @@ Function Connect2vCenter {
     While ($login -eq "0") {
         Try {
             Write-Host -ForegroundColor Yellow "Connecting to vCenter $vCenter!"
-            Connect-VIServer $vCenter -user test -ErrorAction stop -WarningAction SilentlyContinue
+            Connect-VIServer $vCenter -User test -ErrorAction stop -WarningAction SilentlyContinue
             $login = "1"
         }
         Catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
@@ -77,5 +78,5 @@ Write-Host -ForegroundColor Yellow "Script is finished, all VM's can be found in
 $exportVMinfo | Export-Csv $logfile -NoTypeInformation -Delimiter ";"
 
 # Closing vCenter connection.
-Disconnect-VIserver -confirm:$false          
+Disconnect-VIserver -Confirm:$false          
 

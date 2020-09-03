@@ -5,6 +5,7 @@
    Long description
 .EXAMPLE
    Example of how to use this cmdlet
+   .\02_Unregister_VMs.ps1
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
@@ -15,18 +16,21 @@ $vCenter = "hn1584.crelan.be"
 # CSV file name
 $vmfile = "DRP_vm_list.csv"
 
+# Set the working folder the same as where the current script is located
+Set-Location $PSScriptRoot
+
 Function Connect2vCenter {
     Param 
     (
         [string]$vCenter
     )
-    #Connecting to vCenter and check for failed logins
+    # Connecting to vCenter and check for failed logins
     $login = "0"
     While ($login -eq "0") {
         Try {
                             
             Write-Host -ForegroundColor Yellow "Connecting to vCenter $vCenter!"
-            Connect-VIServer $vCenter -user test -ErrorAction stop -WarningAction SilentlyContinue
+            Connect-VIServer $vCenter -User test -ErrorAction stop -WarningAction SilentlyContinue
             $login = "1"
         }
         Catch [VMware.VimAutomation.ViCore.Types.V1.ErrorHandling.InvalidLogin] {
@@ -39,7 +43,7 @@ Function Connect2vCenter {
 
 
 # Ask for confirmation before executing the script
-Write-Host -ForegroundColor Yellow  "You are about the unregister the VMs from the file $vmfile" `n
+Write-Host -ForegroundColor Yellow "You are about the unregister the VMs from the file $vmfile" `n
 $confirm = Read-Host "Are you sure you want to continue? Type [Yes] to confirm"
 
 if ($confirm -eq 'Yes') {
@@ -52,8 +56,8 @@ if ($confirm -eq 'Yes') {
         Remove-VM $row.Name -Confirm:$false        
     } 
 
-    # Closing vCenter connection.
-    Disconnect-VIserver -confirm:$false  
+    # Closing vCenter connection
+    Disconnect-VIserver -Confirm:$false  
     
     Write-Host -ForegroundColor Yellow "VMs have been unregistered based on file $vmfile."
 
