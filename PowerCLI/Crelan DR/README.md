@@ -10,6 +10,6 @@ Fail-over and Fail-back procedure:
 - Ask Storage team to map DR LUNs at recovery site.
 - Rescan hosts and add the LUNs at the recovery site. Use assign "New signature" when adding the existing LUNs at the recovery site!
 - Rename datastores to correct name (remove 'snap-256a1546-')
-- Start script '03_Register_VMs.ps1' (Make sure that VM folder 'DRPXendesktop' is already created.)
+- Start script '03_Register_VMs.ps1'
 - Power ON VMs (Some VMs will wait for an answer if they were Moved or Copied)
 - Ask Storage team to reverse the sync
