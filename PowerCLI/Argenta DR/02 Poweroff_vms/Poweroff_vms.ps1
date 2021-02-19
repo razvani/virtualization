@@ -46,17 +46,19 @@ set-location $PSScriptRoot
 $error.clear()
 
 
-$vcenter="sharbehavcsa003.cegekavirtual.local"
-$NoToolsRunning="notoolsrunning$date$.csv"
-$counter=1
+$vcenter = "sharbehavcsa003.cegekavirtual.local"
+$NoToolsRunning = "notoolsrunning$date$.csv"
+$counter = 1
 
 Write-host -ForegroundColor Green "Enter your username and password to make a connection to $vcenter"
 $vCenterCredentials = Get-Credential -Message "Enter your username name and password for $vcenter"
 
 #Importing CSV file
 Write-Host -ForegroundColor Yellow "Importing CSV file"
-$DataFile = "poweroff_vms.csv"
-$DataContent = Import-Csv -Path $DataFile -Delimiter ";" | Sort-Object Location -Descending
+$DataFile = "Tier3_ACC_Servers.csv"
+$DataContent = Import-Csv -Path $DataFile -Delimiter ";" | Sort-Object Priority -Descending
+$DataContentCount = $DataContent.Count - 1
+$VMsCount = 1
 
 #Connecting to vcenter with custom function
 Connection-vcenter $vcenter -Credential $vCenterCredentials
@@ -65,8 +67,8 @@ Connection-vcenter $vcenter -Credential $vCenterCredentials
 
  foreach ($vm in $DataContent){
  
- 	    Write-host "Checking $($vm.name)"
-        $tempVM = Get-VM $vm.Name  | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
+ 	    Write-host "Checking $($vm.Name)"
+        $tempVM = Get-VM $vm.Name  | Where-Object {$_.ExtensionData.Config.ManagedBy.Type -ne 'placeholderVm'}
 
         if ($tempVM.PowerState -eq "PoweredOn"){
 
@@ -81,7 +83,8 @@ Connection-vcenter $vcenter -Credential $vCenterCredentials
                     Write-Host " $tempVM will be gracefully shutdown"
 				    $tempVM | Shutdown-VMGuest -Confirm:$false
                     $counter++
-                    Write-host "Counter: $counter"
+					Write-host -ForegroundColor Green "Counter before sleep: $counter \ 12 || $VMsCount \ $DataContentCount number of VMs"
+					$VMsCount++
 			    }
 			
 			else
