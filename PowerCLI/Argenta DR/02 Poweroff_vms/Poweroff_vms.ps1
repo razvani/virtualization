@@ -66,7 +66,7 @@ Connection-vcenter $vcenter -Credential $vCenterCredentials
  foreach ($vm in $DataContent){
  
  	    Write-host "Checking $($vm.name)"
-        $tempVM = Get-VM $vm.Name  | Where-Object {$_.ExtensionData.Config.ManagedBy.Type -ne 'placeholderVm'}
+        $tempVM = Get-VM $vm.Name  | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
 
         if ($tempVM.PowerState -eq "PoweredOn"){
 

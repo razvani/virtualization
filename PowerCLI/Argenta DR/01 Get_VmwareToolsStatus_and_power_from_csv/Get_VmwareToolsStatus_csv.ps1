@@ -70,7 +70,7 @@ Connection-vcenter $vcenter -Credential $vCenterCredentials
  foreach ($vm in $DataContent){
  
  	    Write-host "Checking $($vm.name)"
-        $tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.Type -ne 'placeholderVm'}
+        $tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
         $vmView = $tempVM | get-view
         $vmToolsStatus = $vmView.summary.guest.toolsRunningStatus     		
         $tempVM | Select Name, VMHost, PowerState, @{Label="Vmtools"; Expression={$vmToolsStatus}} | export-csv -Path $VmwareToolsStatus -NoTypeInformation -Append -Delimiter ";"

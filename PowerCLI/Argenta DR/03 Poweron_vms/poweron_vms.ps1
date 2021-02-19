@@ -69,7 +69,7 @@ Connection-vcenter $vcenter -Credential $vCenterCredentials
 
         if ($vm.PowerState -eq "PoweredOn"){
             
-            $tempVM = Get-VM $vm.Name
+            $tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
             
             if ($tempVM.PowerState -ne "PoweredOn"){
                 
