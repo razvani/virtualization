@@ -21,10 +21,10 @@ $vCenter = Read-Host -Prompt "Input vCenter FQDN or IP address"
 Write-Host -ForegroundColor Green "Enter your username and password to make a connection to $vCenter"
 $vCenterCredentials = Get-Credential -Message "Enter your username name and password for $vCenter"
 
-$NoToolsRunning = "VMs_ToolsNotRunning_$(get-date -Format yyyyddmm_hhmmtt).csv"
-$sleepCounter = 1
+# Export file name
+$VmwareToolsStatus = "VmwareToolsStatus_$(get-date -Format yyyyddmm_hhmmtt).csv"
 
-# Importing CSV file that contains the VM list.  (sample: Tier3_ACC_Servers.csv)
+# Importing CSV file that contains the VM list.  (sample: Poweroff_vms.csv)
 # CSV header:   Name; Location
 $DataFile = Read-Host -Prompt "Input the name of the import CSV file"
 Write-Host -ForegroundColor Yellow "Importing CSV file $DataFile"
@@ -36,48 +36,25 @@ $VMsCount = 1
 Connect2vCenter $vCenter -Credential $vCenterCredentials
 
 ForEach ($vm in $DataContent){
- 
 	Write-Host -ForegroundColor Yellow "`r`nChecking $($vm.name) - $VMsCount\$DataContentCount"
 	$tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
-	If ($tempVM.PowerState -eq "PoweredOn"){
-		Write-Host "$tempVM is PoweredOn. VMware Tools will be checked...."
-		$vmView = $tempVM | Get-View
-		$vmToolsStatus = $vmView.summary.guest.toolsRunningStatus
-		If ($vmToolsStatus -eq "guestToolsRunning") {
-			# Graceful VM shutdown
-			Write-Host -ForegroundColor Green "$tempVM will be gracefully Shutdown!"
-			$tempVM | Shutdown-VMGuest -Confirm:$false
-			$sleepCounter++
-			Write-host -ForegroundColor Green "Counter before sleep: $sleepCounter from 12"
-		} else {
-			Write-Host -ForegroundColor Red "Vmware tools status is" ($vmToolsStatus).Substring(10)
-			$tempVM | Select-Object Name, VMHost, PowerState, @{Label="VmToolsStatus"; Expression={($vmToolsStatus).Substring(10)}} | Export-Csv -Path $NoToolsRunning -NoTypeInformation -Append -Delimiter ";"
-		}
-	} else {
-		Write-Host -ForegroundColor Green "$tempVM is already Powered Off"
-	}
-
-    $VMsCount++
-
-	If ($sleepCounter -gt 11) {
-		Write-host "Sleeping for 5 seconds"
-		Start-Sleep 5
-		$sleepCounter = 0
-	}
+	$vmView = $tempVM | Get-View
+	$vmToolsStatus = $vmView.summary.guest.toolsRunningStatus     		
+	$tempVM | Select-Object Name, VMHost, PowerState, @{Label="VmToolsStatus"; Expression={$vmToolsStatus}} | Export-Csv -Path $VmwareToolsStatus -NoTypeInformation -Append -Delimiter ";"
+	$VMsCount++
 } 
+
 
 # Exporting the error array to a txt file
 If ($Error) {
 	$Error > error_log.txt
 	Write-Host -ForegroundColor Red "`r`nThere are errors! Check the file: error_log.txt"
 }
+
     
-#Disconnecting from vCenter.
+# Disconnecting from vCenter.
 Write-Host -ForegroundColor Green "Disconnecting from $vCenter please wait...."
-Disconnect-VIServer -Server $vCenter -Confirm:$false   
+Disconnect-VIServer -Server $vCenter -Confirm:$false
 Write-Host -ForegroundColor Green "`r`nDone!"
 
-If ($NoToolsRunning) {
-	Write-Host -ForegroundColor Blue "`r`nCheck the export CSV file for VMs without running VMware tools: $VmwareToolsStatus"
-}
-
+Write-Host -ForegroundColor Blue "`r`nCheck the export CSV file: $VmwareToolsStatus"

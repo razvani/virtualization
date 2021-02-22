@@ -1,2 +1,5 @@
-"Name";"VMHost";"PowerState";"Vmtools"
-"CI00000201-SVARGserver";"esxhost";"PoweredOn";"guestToolsRunning"
+Name;Location
+VM01;Geleen
+VM02;Geleen
+VM03;Hasselt
+CI00094126-TMPL_TEST-W2K19;Hasselt
