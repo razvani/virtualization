@@ -37,7 +37,7 @@ Connect2vCenter $vCenter -Credential $vCenterCredentials
 
 ForEach ($vm in $DataContent){
 	Write-Host -ForegroundColor Yellow "`r`nChecking $($vm.name) - $VMsCount\$DataContentCount"
-	$tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -ne 'com.vmware.vcDr'}
+	$tempVM = Get-VM $vm.Name | Where-Object {$_.ExtensionData.Config.ManagedBy.ExtensionKey -NotMatch 'com.vmware.vcDr'}
 	$vmView = $tempVM | Get-View
 	$vmToolsStatus = $vmView.summary.guest.toolsRunningStatus     		
 	$tempVM | Select-Object Name, VMHost, PowerState, @{Label="VmToolsStatus"; Expression={$vmToolsStatus}} | Export-Csv -Path $VmwareToolsStatus -NoTypeInformation -Append -Delimiter ";"
