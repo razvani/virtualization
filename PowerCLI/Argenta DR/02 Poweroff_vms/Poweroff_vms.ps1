@@ -14,7 +14,7 @@ $Error.clear()
 # vCenter that will be used to connect to.
 $vCenter = Read-Host -Prompt "Input vCenter FQDN or IP address"
 #$vCenter = "pocbehavcsa001.pocvirtual.local"
-#vCenter = "sharbehavcsa003.cegekavirtual.local"
+#$vCenter = "sharbehavcsa003.cegekavirtual.local"
 #$vCenter = "argbehavcsa001argvirtual.local"
 
 # vCenter credentials
