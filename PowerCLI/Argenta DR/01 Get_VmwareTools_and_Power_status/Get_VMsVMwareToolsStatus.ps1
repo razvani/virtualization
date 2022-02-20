@@ -32,6 +32,9 @@ $DataContent = Import-Csv -Path $DataFile -Delimiter ";" | Sort-Object Location 
 $DataContentCount = ($DataContent | Measure-Object).count
 $VMsCount = 1
 
+#Measure the run-time of a PowerShell script
+$StopWatch = [system.diagnostics.stopwatch]::startNew()
+
 # Connecting to vCenter
 Connect2vCenter $vCenter -Credential $vCenterCredentials
 
@@ -55,6 +58,10 @@ If ($Error) {
 # Disconnecting from vCenter.
 Write-Host -ForegroundColor Green "Disconnecting from $vCenter please wait...."
 Disconnect-VIServer -Server $vCenter -Confirm:$false
+
+#Done
+$StopWatch.Stop()
+Write-Host  -ForegroundColor Green ("`r`nThis script took {0:N3} minutes to run." -f $StopWatch.Elapsed.TotalMinutes)
 Write-Host -ForegroundColor Green "`r`nDone!"
 
 Write-Host -ForegroundColor Blue "`r`nCheck the export CSV file: $VmwareToolsStatus"
