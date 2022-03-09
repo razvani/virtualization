@@ -15,7 +15,7 @@
 $SearchBase="OU=Users,OU=Cegeka,DC=cegekavirtual,DC=local"
 $smtpServer="smtp.cegeka.be"
 $expireindays = 7 #number of days of soon-to-expire paswords. i.e. notify for expiring in X days (and every day until $negativedays)
-$negativedays = -1 #negative number of days (days already-expired). i.e. notify for expired X days ago
+$negativedays = -2945 #negative number of days (days already-expired). i.e. notify for expired X days ago
 $from = "SharedCegekavirtualAdministrator <no-reply@cegeka.com>"
 $logging = $true # Set to $false to Disable Logging
 $logNonExpiring = $false
@@ -65,7 +65,7 @@ $users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabl
 $DefaultmaxPasswordAge = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
 Write-Host "`nDefault Domain Password Policy = $DefaultmaxPasswordAge`n" -ForegroundColor Green
 
-$countprocessed=${users}.Count
+$countprocessed={$users}.Count
 Write-Host "$countprocessed users to process from $SearchBase`:`n" -ForegroundColor Green
 
 
@@ -134,7 +134,7 @@ foreach ($user in $users) {
     $body="
     <p>Dear $dName,<br></p>
 
-    <p>Please be informed that your Active Directory password for your <b>$domain\$sName</b> account $messageDays. You will not be able to login on <a href='https://cloud.cegeka.com/'>SHARED</a> Virtulization infrastructure until your password is changed.</p>
+    <p>Please be informed that your Active Directory account password for <b>$domain\$sName</b> $messageDays. You will not be able to login on <a href='https://cloud.cegeka.com/'>SHARED</a> Virtulization infrastructure until your password is changed.</p>
     <p>You can change your password on <a href='https://csc.cegeka.com/RequestCenter/website/CSC/application/search.html?route=search&q=Reset+Password+for+vCenter+User+Account+&tkq=on'>CSC Order Portal</a><br><br></p>
     
     <p>This is an automatic email. If you want to reply please do so to virtualisatie@cegeka.com.<br></p>
@@ -228,8 +228,8 @@ if ($logging -eq $true) {
     }
 
     $body+="
-    CSV Attached for $date<br>
-    $countprocessed Users from `"$SearchBase`" Processed in $minutes minutes $seconds seconds.<br>
+    See the attached CSV file for $date<br>
+    $countprocessed users from `"$SearchBase`" Processed in $minutes minutes $seconds seconds.<br>
     Email trigger range from $negativedays (past) to $expireindays (upcoming) days of user's password expiry date.<br>
     $countsent Emails Sent.<br>
     $countnotsent Emails skipped.<br>
