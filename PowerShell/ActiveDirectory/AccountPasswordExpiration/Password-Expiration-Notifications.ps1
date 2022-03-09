@@ -12,7 +12,7 @@
 #
 ##################################################################################################################
 # Please Configure the following variables....
-$SearchBase="OU=Users,OU=Cegeka,DC=cegekavirtual,DC=local"  #"OU=Users,OU=Cegeka,DC=cegekavirtual,DC=local"
+$SearchBase="OU=Users,OU=Cegeka,DC=cegekavirtual,DC=local"
 $smtpServer="smtp.cegeka.be"
 $expireindays = 7 #number of days of soon-to-expire paswords. i.e. notify for expiring in X days (and every day until $negativedays)
 $negativedays = -1 #negative number of days (days already-expired). i.e. notify for expired X days ago
@@ -20,8 +20,8 @@ $from = "SharedCegekavirtualAdministrator <no-reply@cegeka.com>"
 $logging = $true # Set to $false to Disable Logging
 $logNonExpiring = $false
 $logFile = "D:\AccountPasswordExpiration\Logs\PS-pwd-expiry.csv" # ie. c:\mylog.csv
-$testing = $true # Set to $false to Email Users
-$adminEmailAddr = "vCenterAlerts@cegeka.com"#,"Admin2@example.com","Admin3@example.com" #multiple addr allowed but MUST be independent strings separated by comma
+$testing = $false # Set to $false to Email Users
+$adminEmailAddr = "vCenterAlerts@cegeka.com" #,"Admin2@example.com","Admin3@example.com" #multiple addr allowed but MUST be independent strings separated by comma
 $sampleEmails = 1 #number of sample email to send to adminEmailAddr when testing ; in the form $sampleEmails="ALL" or $sampleEmails=[0..X] e.g. $sampleEmails=0 or $sampleEmails=3 or $sampleEmails="all" are all valid.
 #
 ###################################################################################################################
@@ -32,7 +32,7 @@ $date = Get-Date -format yyyy-MM-dd
 
 $starttime=Get-Date #need time also; don't use date from above
 
-Write-Host "Processing `"$SearchBase`" for Password-Expiration-Notifications"
+Write-Host "`nProcessing `"$SearchBase`" for Password-Expiration-Notifications"
 
 #set max sampleEmails to send to $adminEmailAddr
 if ( $sampleEmails -isNot [int]) {
@@ -42,25 +42,33 @@ if ( $sampleEmails -isNot [int]) {
 }
 
 if (($testing -eq $true) -and ($sampleEmails -ge 0)) {
-    Write-Host "Testing only; $sampleEmails email samples will be sent to $adminEmailAddr"
+    Write-Host "Testing only! $sampleEmails email samples will be sent to $adminEmailAddr"
 } elseif (($testing -eq $true) -and ($sampleEmails -eq 0)) {
-    Write-Host "Testing only; emails will NOT be sent"
+    Write-Host "Testing only! Emails will NOT be sent."
 }
 
 # Create CSV Log
 if ($logging -eq $true) {
     #Always purge old CSV file
     Out-File $logfile
-    Add-Content $logfile "`"Date`",`"SAMAccountName`",`"DisplayName`",`"Created`",`"PasswordSet`",`"DaystoExpire`",`"ExpiresOn`",`"EmailAddress`",`"Notified`""
+    Add-Content $logfile "`"Date`",`"SAMAccountName`",`"DisplayName`",`"Created`",`"PasswordSet`",`"DaystoExpire`",`"ExpiresOn`",`"EmailAddress`",`"Notified`",`"LastLogonDate`""
 }
 
 # Get Users From AD who are Enabled, Passwords Expire
 Import-Module ActiveDirectory
-$users = Get-ADUser -SearchBase $SearchBase -Filter {(enabled -eq $true) -and (passwordNeverExpires -eq $false)} -properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated
+
+$DomainName = Get-ADDomainController | Select-Object Name, Domain
+$domain = ($DomainName.Domain).split(".")[0]
+
+$users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabled -eq $true) -and (PasswordNeverExpires -eq $false)} -Properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated, LastLogonDate
+
 $DefaultmaxPasswordAge = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
-Write-Host "DefaultmaxPasswordAge: $DefaultmaxPasswordAge"
+Write-Host "`nDefault Domain Password Policy = $DefaultmaxPasswordAge`n" -ForegroundColor Green
 
 $countprocessed=${users}.Count
+Write-Host "$countprocessed users to process from $SearchBase`:`n" -ForegroundColor Green
+
+
 $samplesSent=0
 $countsent=0
 $countnotsent=0
@@ -73,12 +81,16 @@ foreach ($user in $users) {
     $emailaddress = $user.emailaddress
     $whencreated = $user.whencreated
     $passwordSetDate = $user.PasswordLastSet
+    $lastLogonDate = $user.LastLogonDate
+
     $sent = "" # Reset Sent Flag
-
-    Write-Host "$dName $sName $emailaddress $whencreated $passwordSetDate"
-
     $PasswordPol = (Get-AduserResultantPasswordPolicy $user)
+    
     # Check for Fine Grained Password
+    
+    # Debugging
+    Write-Host "$dName Account=$sName EmailAddress=$emailaddress AccountCreated=$whencreated PasswordSetDate=$passwordSetDate UserPasswordPolicy=$PasswordPol LastLogonDate=$lastLogonDate`n" -ForegroundColor Yellow
+    
     if (($PasswordPol) -ne $null) {
         $maxPasswordAge = ($PasswordPol).MaxPasswordAge
     } else {
@@ -105,7 +117,7 @@ foreach ($user in $users) {
         #continue #"continue" would skip user, but bypass any non-expiry logging
     }
 
-    Write-Host "$sName DtE: $daystoexpire MPA: $maxPasswordAge" #debug
+    Write-Host "$sName DtE: $daystoexpire MPA: $maxPasswordAge`n" #debug
 
     # Set verbiage based on Number of Days to Expiry.
     Switch ($daystoexpire) {
@@ -116,18 +128,19 @@ foreach ($user in $users) {
     }
 
     # Email Subject Set Here
-    $subject="Your password $messageDays"
+    $subject="[Cegeka Cloud] Your password $messageDays"
 
     # Email Body Set Here, Note You can use HTML, including Images.
     $body="
-    <p>Your Active Directory password for your <b>$sName</b> account $messageDays.  After expired, you will not be able to login until your password is changed.</p>
+    <p>Dear $dName,<br></p>
 
-    <p>Please visit <a href='https://csc.cegeka.com/'>CSC Order Portal</a> to change your password.<br></p>
-
+    <p>Please be informed that your Active Directory password for your <b>$domain\$sName</b> account $messageDays. You will not be able to login on <a href='https://cloud.cegeka.com/'>SHARED</a> Virtulization infrastructure until your password is changed.</p>
+    <p>You can change your password on <a href='https://csc.cegeka.com/RequestCenter/website/CSC/application/search.html?route=search&q=Reset+Password+for+vCenter+User+Account+&tkq=on'>CSC Order Portal</a><br><br></p>
+    
     <p>This is an automatic email. If you want to reply please do so to virtualisatie@cegeka.com.<br></p>
 
     <p>Kind regards,<br>
-    Virtualization team/<br>
+    Virtualization team<br>
     </p>
     "
 
@@ -172,7 +185,7 @@ foreach ($user in $users) {
 
         # If Logging is Enabled Log Details
         if ($logging -eq $true) {
-            Add-Content $logfile "`"$date`",`"$sName`",`"$dName`",`"$whencreated`",`"$passwordSetDate`",`"$daystoExpire`",`"$expireson`",`"$emailaddress`",`"$sent`""
+            Add-Content $logfile "`"$date`",`"$sName`",`"$dName`",`"$whencreated`",`"$passwordSetDate`",`"$daystoExpire`",`"$expireson`",`"$emailaddress`",`"$sent`",`"$lastLogonDate`""
         }
     } else {
         #if ( ($daystoexpire -eq "NA") -and ($maxPasswordAge -eq 0) ) { Write-Host "$sName PasswordNeverExpires" } elseif ($daystoexpire -eq "NA") { Write-Host "$sName PasswordNeverSet" } #debug
@@ -183,7 +196,7 @@ foreach ($user in $users) {
             } else {
                 $sent = "No"
             }
-            Add-Content $logfile "`"$date`",`"$sName`",`"$dName`",`"$whencreated`",`"$passwordSetDate`",`"$daystoExpire`",`"$expireson`",`"$emailaddress`",`"$sent`""
+            Add-Content $logfile "`"$date`",`"$sName`",`"$dName`",`"$whencreated`",`"$passwordSetDate`",`"$daystoExpire`",`"$expireson`",`"$emailaddress`",`"$sent`",`"$lastLogonDate`""
         }
     }
 
@@ -203,7 +216,7 @@ Write-Host "$countfailed Emails failed."
 if ($logging -eq $true) {
     #sort the CSV file
     Rename-Item $logfile "$logfile.old"
-    import-csv "$logfile.old" | sort ExpiresOn | export-csv $logfile -NoTypeInformation
+    Import-Csv "$logfile.old" | sort ExpiresOn | export-csv $logfile -NoTypeInformation
     Remove-Item "$logFile.old"
     Write-Host "CSV File created at ${logfile}."
 
