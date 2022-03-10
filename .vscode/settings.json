@@ -1,0 +1,4 @@
+{
+    "gitlab.ignoreCertificateErrors": true,
+    "gitlab.instanceUrl": "https://gitlab.cegeka.com/"
+}
