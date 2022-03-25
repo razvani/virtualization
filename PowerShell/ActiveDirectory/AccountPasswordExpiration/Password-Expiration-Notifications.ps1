@@ -234,11 +234,12 @@ if ($logging -eq $true) {
     Email trigger range from $negativedays (past) to $expireindays (upcoming) days of user's password expiry date.<br>
     $countsent Emails Sent.<br>
     $countnotsent Emails skipped.<br>
-    $countfailed Emails failed.
+    $countfailed Emails failed.<br><br>
+    Mail sent from $env:computername
     "
 
     try {
-        Send-Mailmessage -smtpServer $smtpServer -from $from -to $adminEmailAddr -subject "Password Expiry Logs" -body $body -bodyasHTML -Attachments "$logFile" -priority High -Encoding $textEncoding -ErrorAction Stop -ErrorVariable err
+        Send-Mailmessage -smtpServer $smtpServer -from $from -to $adminEmailAddr -subject "[$domain] Password Expiry Logs" -body $body -bodyasHTML -Attachments "$logFile" -priority High -Encoding $textEncoding -ErrorAction Stop -ErrorVariable err
     } catch {
          write-host "Error: Failed to email CSV log to $adminEmailAddr via $smtpServer"
     } finally {
