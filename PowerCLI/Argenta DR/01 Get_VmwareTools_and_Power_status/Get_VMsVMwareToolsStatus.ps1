@@ -25,10 +25,10 @@ $vCenterCredentials = Get-Credential -Message "Enter your username name and pass
 $VmwareToolsStatus = "VmwareToolsStatus_$(get-date -Format yyyyddmm_hhmmtt).csv"
 
 # Importing CSV file that contains the VM list.  (sample: Poweroff_vms.csv)
-# CSV header:   Name; Location
+# CSV header:   Name
 $DataFile = Read-Host -Prompt "Input the name of the import CSV file"
 Write-Host -ForegroundColor Yellow "Importing CSV file $DataFile"
-$DataContent = Import-Csv -Path $DataFile -Delimiter ";" | Sort-Object Location -Descending
+$DataContent = Import-Csv -Path $DataFile -Delimiter ";"
 $DataContentCount = ($DataContent | Measure-Object).count
 $VMsCount = 1
 
