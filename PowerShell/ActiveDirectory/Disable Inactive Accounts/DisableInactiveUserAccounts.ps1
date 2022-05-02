@@ -17,9 +17,16 @@ $from = "Shared.Cegekavirtual.Administrator <no-reply@cegeka.com>"
 $testing = $true # Set to $true to not disable Users
 
 $xDays = 186 # Ammount of days for user accounts not logged on
-$logFile = "D:\AccountPasswordExpiration\Logs\DisabledInactiveUserAccounts.csv" # ie. c:\mylog.csv
+$logFile = "Logs\DisabledInactiveUserAccounts_log.csv"
 
+$exceptionUsersList = "DisableInactiveUserAccounts_ExceptionUsersList.csv"  # The excepted user list.   SAMAccountName
 #################################################################################################################
+
+# Set location the same as the folder where the current script is located
+Set-Location $PSScriptRoot
+
+# Import the list of users that will be excepted
+$exceptedUsers = Import-Csv -Path $exceptionUsersList
 
 # System Settings
 $textEncoding = [System.Text.Encoding]::UTF8
@@ -32,9 +39,12 @@ $domain = ($DomainName.Domain).split(".")[0]
 $users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabled -eq $true)} -Properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated, LastLogonDate
 
 $notLoggedOnForXdays = (get-date).adddays(-$xDays)
+
+# Initializing the counters
 $counterNeverLoggedOn = 0
 $counternotLoggedOnForXdays = 0
 
+# Count all users that will be processed
 $countprocessed=${users}.Count
 Write-Host `Users to process: ` -ForegroundColor Cyan $countprocessed
 
@@ -52,7 +62,8 @@ foreach ($user in $users) {
     $passwordSetDate = $user.PasswordLastSet
     $LastLogonDate = $user.LastLogonDate
 
-    If ($LastLogonDate -eq $null) {
+    
+    If ($LastLogonDate -eq $null -and !($exceptedUsers -match $sName)) {
         # Write-Host "$dName Account=$sName AccountCreated=$whencreated PasswordSetDate=$passwordSetDate LastLogonDate=$LastLogonDate`n" -ForegroundColor Yellow
         $counterNeverLoggedOn++
         
@@ -70,7 +81,7 @@ foreach ($user in $users) {
         
         $found = $true;
 
-    } ElseIf ($LastLogonDate -le $notLoggedOnForXdays) {
+    } ElseIf ($LastLogonDate -le $notLoggedOnForXdays -and !($exceptedUsers -match $sName)) {
         # Write-Host "$dName Account=$sName AccountCreated=$whencreated PasswordSetDate=$passwordSetDate LastLogonDate=$LastLogonDate`n" -ForegroundColor Yellow
         $counternotLoggedOnForXdays++
 
