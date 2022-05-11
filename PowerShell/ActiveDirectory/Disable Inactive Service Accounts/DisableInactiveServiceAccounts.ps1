@@ -116,7 +116,7 @@ $subject = "[$domain] Disabled service accounts not logged on for more than $xDa
 $body="
     <p>Hello,<br></p>
 
-    <p>In attachment you can find the <b>service</b> accounts that are not logged on for more than $xDays days.</p>
+    <p>In attachment you can find the $domain <b>service</b> accounts that are not logged on for more than $xDays days.</p>
     <p>These accounts have been disabled and moved to $InactiveUsers organizataional unit.</br>
     Total <b>active</b> service accounts: $countprocessed</br>
     Never logged on service accounts: $counterNeverLoggedOn</br>
