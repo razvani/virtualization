@@ -104,8 +104,8 @@ foreach ($user in $users) {
 } # End User Processing
 
 
-Write-Host `Never logged on: ` $counterNeverLoggedOn `users`
-Write-Host `Not logged on for` $xDays `days:` $counternotLoggedOnForXdays `users`
+Write-Host `Never logged on: ` $counterNeverLoggedOn ` users`
+Write-Host `Not logged on for` $xDays `days:` $counternotLoggedOnForXdays ` users`
 
 
 ##############################################
@@ -118,7 +118,7 @@ $body="
     <p>Hello,<br></p>
 
     <p>In attachment you can find the accounts that are not logged on for more than $xDays days.</p>
-    <p>These account have been disabled and moved to $InactiveUsers organizataional unit.</br>
+    <p>These accounts have been disabled and moved to $InactiveUsers organizataional unit.</br>
     Total <b>active</b> user accounts: $countprocessed</br>
     Never logged on users: $counterNeverLoggedOn</br>
     Not logged on for $xDays days: $counternotLoggedOnForXdays</br>

@@ -1,14 +1,13 @@
-#################################################################################################################
-# Disable users if are not logged on for more than a certain ammount of days and move them in a different OU
+########################################################################################################################
+# Disable service user accounts if are not used for more than a certain ammount of days and move them in a different OU
 # 
 # Requires: Windows PowerShell Module for Active Directory
 # 
-#################################################################################################################
+########################################################################################################################
 # Variables
 
-
-$SearchBase="OU=Users,OU=Cegeka,DC=cegekavirtual,DC=local" # User account orgranization unit
-$InactiveUsers="OU=Inactive Users,OU=Disabled users,DC=cegekavirtual,DC=local" # Organizational unit to move disabled user account
+$SearchBase = "OU=Service Accounts,OU=Cegeka,DC=cegekavirtual,DC=local" # Service user accounts orgranization unit
+$InactiveUsers="OU=Inactive Users,OU=Disabled users,DC=cegekavirtual,DC=local" # Organizational unit to move disabled user accounts
 
 $smtpServer="smtp.cegeka.be" # SMTP server
 $adminEmailAddr = "vCenterAlerts@cegeka.com" #,"Admin2@example.com","Admin3@example.com" #multiple addr allowed but MUST be independent strings separated by comma
@@ -16,10 +15,10 @@ $from = "Shared.Cegekavirtual.Administrator <no-reply@cegeka.com>"
 
 $testing = $true # Set to $true to not disable Users
 
-$xDays = 186 # Ammount of days for user accounts not logged on
-$logFile = "Logs\DisabledInactiveUserAccounts_log.csv"
+$xDays = 30 # Ammount of days for user accounts not logged on
+$logFile = "Logs\DisabledInactiveServiceAccounts_log.csv"
 
-$exceptionUsersList = "DisableInactiveUserAccounts_ExceptionUsersList.csv"  # The excepted user list.   SAMAccountName
+$exceptionUsersList = "DisableInactiveServiceAccounts_ExceptionUsersList.csv"  # The excepted user list.   SAMAccountName
 #################################################################################################################
 
 # Set location the same as the folder where the current script is located
@@ -44,7 +43,7 @@ $notLoggedOnForXdays = (get-date).adddays(-$xDays)
 $counterNeverLoggedOn = 0
 $counternotLoggedOnForXdays = 0
 
-# Count all users that will be processed
+# Count all service accounts that will be processed
 $countprocessed=${users}.Count
 Write-Host `Users to process: ` -ForegroundColor Cyan $countprocessed
 
@@ -104,23 +103,23 @@ foreach ($user in $users) {
 } # End User Processing
 
 
-Write-Host `Never logged on: ` $counterNeverLoggedOn `users`
-Write-Host `Not logged on for` $xDays `days:` $counternotLoggedOnForXdays `users`
+Write-Host `Never logged on: ` $counterNeverLoggedOn ` users`
+Write-Host `Not logged on for` $xDays `days:` $counternotLoggedOnForXdays ` users`
 
 
 ##############################################
 # Send mail message 
 
-$subject = "[$domain] Disabled accounts not logged on for more than $xDays days"
+$subject = "[$domain] Disabled service accounts not logged on for more than $xDays days"
     # Email Body Set Here, Note You can use HTML, including Images.
 
 $body="
     <p>Hello,<br></p>
 
-    <p>In attachment you can find the accounts that are not logged on for more than $xDays days.</p>
-    <p>These account have been disabled and moved to $InactiveUsers organizataional unit.</br>
-    Total <b>active</b> user accounts: $countprocessed</br>
-    Never logged on users: $counterNeverLoggedOn</br>
+    <p>In attachment you can find the <b>service</b> accounts that are not logged on for more than $xDays days.</p>
+    <p>These accounts have been disabled and moved to $InactiveUsers organizataional unit.</br>
+    Total <b>active</b> service accounts: $countprocessed</br>
+    Never logged on service accounts: $counterNeverLoggedOn</br>
     Not logged on for $xDays days: $counternotLoggedOnForXdays</br>
 
     <p>This is an automatic email sent from $env:computername.</p>
