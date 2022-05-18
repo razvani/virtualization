@@ -18,7 +18,7 @@ $testing = $true # Set to $true to not disable Users
 $xDays = 30 # Ammount of days for user accounts not logged on
 $logFile = "Logs\DisabledInactiveServiceAccounts_log.csv"
 
-$exceptionUsersList = "DisableInactiveServiceAccounts_ExceptionUsersList.csv"  # The excepted user list.   SAMAccountName
+$exceptionUsersList = "DisableInactiveServiceAccounts_ExceptionsList.csv"  # The excepted user list.   SAMAccountName
 #################################################################################################################
 
 # Set location the same as the folder where the current script is located
