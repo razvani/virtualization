@@ -4,6 +4,13 @@
 # Requires: Windows PowerShell Module for Active Directory
 # 
 ########################################################################################################################
+# Parameters
+
+param (
+        [String]$u, # User account
+        [String]$p # Account password
+)
+#################################################################################################################
 # Variables
 
 $SearchBase = "OU=Service Accounts,OU=Cegeka,DC=cegekavirtual,DC=local" # Service user accounts orgranization unit
@@ -15,11 +22,21 @@ $from = "Shared.Cegekavirtual.Administrator <no-reply@cegeka.com>"
 
 $testing = $true # Set to $true to not disable Users
 
-$xDays = 30 # Ammount of days for user accounts not logged on
+$xDays = 60 # Ammount of days for user accounts not logged on
 $logFile = "Logs\DisabledInactiveServiceAccounts_log.csv"
 
 $exceptionUsersList = "DisableInactiveServiceAccounts_ExceptionsList.csv"  # The excepted user list.   SAMAccountName
 #################################################################################################################
+
+Import-Module ActiveDirectory
+
+# Credentials from parameters
+if ($u) {
+    $securePassword = ConvertTo-SecureString $p -AsPlainText -Force
+    $secureCredentials = New-Object System.Management.Automation.PSCredential ($u, $securePassword)
+} else {
+    Write-Host "`r`n`$u and `$p not provided as script parameters. Accounts will not be disabled due to lack of AD permission.`r`n" -ForegroundColor Yellow
+}
 
 # Set location the same as the folder where the current script is located
 Set-Location $PSScriptRoot
@@ -69,10 +86,10 @@ foreach ($user in $users) {
         if($testing -eq $false) {
         
             # Disable user account
-            Disable-ADAccount $user
+            Disable-ADAccount -Identity $user -Credential $secureCredentials -Server $DomainName.Domain
             
             # Move user account
-            Get-ADUser $user | Move-ADObject -TargetPath $InactiveUsers
+            Get-ADUser $user | Move-ADObject -TargetPath $InactiveUsers -Credential $secureCredentials -Server $DomainName.Domain
         };
 
         # Logging
@@ -87,10 +104,10 @@ foreach ($user in $users) {
         if($testing -eq $false) {
         
             # Disable user account
-            Disable-ADAccount $user
+            Disable-ADAccount -Identity $user -Credential $secureCredentials -Server $DomainName.Domain
             
             # Move user account
-            Get-ADUser $user | Move-ADObject -TargetPath $InactiveUsers
+            Get-ADUser $user | Move-ADObject -TargetPath $InactiveUsers -Credential $secureCredentials -Server $DomainName.Domain
         };
 
         # Logging
