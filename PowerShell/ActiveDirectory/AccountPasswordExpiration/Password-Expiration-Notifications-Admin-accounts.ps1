@@ -23,6 +23,7 @@ $logFile = "D:\AccountPasswordExpiration\Logs\PS-admins-pwd-expiry.csv" # ie. c:
 $testing = $true # Set to $false to Email Users
 $adminEmailAddr = "vCenterAlerts@cegeka.com" #,"Admin2@example.com","Admin3@example.com" #multiple addr allowed but MUST be independent strings separated by comma
 $sampleEmails = 1 #number of sample email to send to adminEmailAddr when testing ; in the form $sampleEmails="ALL" or $sampleEmails=[0..X] e.g. $sampleEmails=0 or $sampleEmails=3 or $sampleEmails="all" are all valid.
+$adFineGrainedPasswordPolicy = 'Admins Password Policy' # AD Admin passsword policy name 
 #
 ###################################################################################################################
 
@@ -64,8 +65,13 @@ $users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabl
 
 #$DefaultmaxPasswordAge = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
 #Write-Host "`nDefault Domain Password Policy = $DefaultmaxPasswordAge`n" -ForegroundColor Green
-$DefaultmaxPasswordAge = (Get-ADFineGrainedPasswordPolicy -Identity 'Admins Password Policies' -Properties * | Select MaxPasswordAge).MaxPasswordAge
-Write-Host "`nAdmins Password Policy - MaxPasswordAge = $DefaultmaxPasswordAge`n" -ForegroundColor Green
+$DefaultmaxPasswordAge = (Get-ADFineGrainedPasswordPolicy -Identity $adFineGrainedPasswordPolicy -Properties * | Select MaxPasswordAge).MaxPasswordAge
+if ($DefaultmaxPasswordAge) {
+    Write-Host "`nAdmins Password Policy - MaxPasswordAge = $DefaultmaxPasswordAge`n" -ForegroundColor Green
+} else {
+    throw 'ADFineGrainedPasswordPolicy with name "$adFineGrainedPasswordPolicy" does not exist!'
+}
+
 
 $countprocessed=${users}.Count
 Write-Host "$countprocessed users to process from $SearchBase`:`n" -ForegroundColor Green
