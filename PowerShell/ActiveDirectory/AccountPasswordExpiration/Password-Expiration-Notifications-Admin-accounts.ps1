@@ -11,7 +11,15 @@
 # Requires: Windows PowerShell Module for Active Directory
 #
 ##################################################################################################################
-# Please Configure the following variables....
+# Parameters
+
+param (
+        [String]$u, # User account
+        [String]$p # Account password
+)
+#################################################################################################################
+# Variables
+
 $SearchBase="OU=Admins,OU=Cegeka,DC=cegekavirtual,DC=local"
 $smtpServer="smtp.cegeka.be"
 $expireindays = 14 #number of days of soon-to-expire paswords. i.e. notify for expiring in X days (and every day until $negativedays)
@@ -31,7 +39,7 @@ $adFineGrainedPasswordPolicy = 'Admins Password Policy' # AD Admin passsword pol
 $textEncoding = [System.Text.Encoding]::UTF8
 $date = Get-Date -format yyyy-MM-dd
 
-$starttime=Get-Date #need time also; don't use date from above
+$starttime = Get-Date #need time also; don't use date from above
 
 Write-Host "`nProcessing `"$SearchBase`" for Password-Expiration-Notifications"
 
@@ -58,14 +66,23 @@ if ($logging -eq $true) {
 # Get Users From AD who are Enabled, Passwords Expire
 Import-Module ActiveDirectory
 
+# Credentials from parameters
+if ($u) {
+    $securePassword = ConvertTo-SecureString $p -AsPlainText -Force
+    $secureCredentials = New-Object System.Management.Automation.PSCredential ($u, $securePassword)
+} else {
+    Write-Host "`r`n`$u and `$p not provided as script parameters. Accounts will not be disabled due to lack of AD permission.`r`n" -ForegroundColor Yellow
+}
+
 $DomainName = Get-ADDomainController | Select-Object Name, Domain
 $domain = ($DomainName.Domain).split(".")[0]
 
 $users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabled -eq $true) -and (PasswordNeverExpires -eq $false)} -Properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated, LastLogonDate
 
+
 #$DefaultmaxPasswordAge = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
 #Write-Host "`nDefault Domain Password Policy = $DefaultmaxPasswordAge`n" -ForegroundColor Green
-$DefaultmaxPasswordAge = (Get-ADFineGrainedPasswordPolicy -Identity $adFineGrainedPasswordPolicy -Properties * | Select MaxPasswordAge).MaxPasswordAge
+$DefaultmaxPasswordAge = (Get-ADFineGrainedPasswordPolicy -Identity $adFineGrainedPasswordPolicy -Properties * -Credential $secureCredentials -Server $DomainName.Domain | Select MaxPasswordAge).MaxPasswordAge
 if ($DefaultmaxPasswordAge) {
     Write-Host "`nAdmins Password Policy - MaxPasswordAge = $DefaultmaxPasswordAge`n" -ForegroundColor Green
 } else {
@@ -92,7 +109,7 @@ foreach ($user in $users) {
     $LastLogonDate = $user.LastLogonDate
 
     $sent = "" # Reset Sent Flag
-    $PasswordPol = (Get-AduserResultantPasswordPolicy $user)
+    $PasswordPol = (Get-AduserResultantPasswordPolicy $user -Credential $secureCredentials -Server $DomainName.Domain)
     
     # Check for Fine Grained Password
     
