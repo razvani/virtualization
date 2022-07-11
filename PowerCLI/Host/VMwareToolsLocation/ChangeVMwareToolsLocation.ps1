@@ -13,32 +13,32 @@ $clustersDataArray = @(
        # SHARED
        [pscustomobject]@{
                         clusterNameRegEx='SHARBEHACLU\w+_1\d+'; # RegEx for Shared clusters in Hasselt AZ1
-                        toolsLocation='/vmfs/volumes/TEMPLATES_HAS_AZ1/VMwareTools'
+                        toolsLocation='/vmfs/volumes/ISO_HAS_AZ1/VMwareTools'
         }
        [pscustomobject]@{
                         clusterNameRegEx='SHARBEHACLU\w+_2\d+'; # RegEx for Shared clusters in Hasselt AZ2
-                        toolsLocation='/vmfs/volumes/TEMPLATES_HAS_AZ2/VMwareTools'
+                        toolsLocation='/vmfs/volumes/ISO_HAS_AZ2/VMwareTools'
         }
        [pscustomobject]@{
                         clusterNameRegEx='SHARNLGECLU\w+_1\d+'; # RegEx for Shared clusters in Geleen AZ1
-                        toolsLocation='/vmfs/volumes/TEMPLATES_GEL_AZ1/VMwareTools'
+                        toolsLocation='/vmfs/volumes/ISO_GEL_AZ1/VMwareTools'
         }
        [pscustomobject]@{
                         clusterNameRegEx='SHARNLGECLU\w+_2\d+'; # RegEx for Shared clusters in in Geleen AZ2
-                        toolsLocation='/vmfs/volumes/TEMPLATES_GEL_AZ2/VMwareTools'
+                        toolsLocation='/vmfs/volumes/ISO_GEL_AZ2/VMwareTools'
        }
 
        # TST
        [pscustomobject]@{
                         clusterNameRegEx='TSTBEHACLU\w+_1\d+'; # RegEx for TST clusters in Hasselt AZ1
-                        toolsLocation='/vmfs/volumes/TEMPLATES_HAS_AZ1/VMwareTools'
+                        toolsLocation='/vmfs/volumes/ISO_HAS_AZ1/VMwareTools'
        }
 
    )
 
 # ESXi name RegEx to filter hosts
-#$ESXiHostsRegEx = 'shar' 
-$ESXiHostsRegEx = 'tst'
+$ESXiHostsRegEx = 'shar' 
+#$ESXiHostsRegEx = 'tst'
 
 #################################################################################################################
 
