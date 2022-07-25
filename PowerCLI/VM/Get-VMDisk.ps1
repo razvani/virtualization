@@ -1,3 +1,13 @@
+<# examples
+
+#Output to Console
+Get-VM "name"| Get-VMDisk | ft -AutoSize
+
+#Export to CSV
+Get-VM "name"| Get-VMDisk | Export-Csv -NoTypeInformation -UseCulture -Path "VM-Disks.csv"
+
+#>
+
 function Get-VMDisk {
 
 [CmdletBinding()]
