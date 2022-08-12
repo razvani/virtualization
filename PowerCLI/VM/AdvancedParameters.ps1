@@ -22,12 +22,12 @@ Catch
 
 $DCMHash = @{
 
-    'RemoteDisplay.vnc.enabled' = 'FALSE'
-    'tools.setInfo.sizeLimit' = '1048576'
-    'log.keepOld' = '10'
-    'isolation.device.connectable.disable' = 'TRUE'
-    'isolation.device.edit.disable' = 'TRUE'
-    'isolation.tools.diskShrink.disable' = 'TRUE'
+	'RemoteDisplay.vnc.enabled' = 'FALSE'
+	'tools.setInfo.sizeLimit' = '1048576'
+	'log.keepOld' = '10'
+	'isolation.device.connectable.disable' = 'TRUE'
+	'isolation.device.edit.disable' = 'TRUE'
+	'isolation.tools.diskShrink.disable' = 'TRUE'
 	'isolation.tools.diskWiper.disable' = 'TRUE'
 	'isolation.tools.copy.disable' = 'TRUE'
 	'isolation.tools.dnd.disable' = 'TRUE'
