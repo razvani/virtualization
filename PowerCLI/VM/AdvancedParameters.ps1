@@ -1,6 +1,6 @@
 # VARS
-$VIServerName = "sharbehavcsa002.cegekavirtual.local"
-$VIUser = "admin.jeroenl"
+$VIServerName = "vcenter.domain.ext"
+$VIUser = "admin.account"
 
 ### VM Information ###
 $VMNames = @("vmname1", "vmname1")
