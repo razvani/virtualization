@@ -22,9 +22,6 @@ Catch
 
 $DCMHash = @{
 
-	'RemoteDisplay.vnc.enabled' = 'FALSE'
-	'tools.setInfo.sizeLimit' = '1048576'
-	'log.keepOld' = '10'
 	'isolation.device.connectable.disable' = 'TRUE'
 	'isolation.device.edit.disable' = 'TRUE'
 	'isolation.tools.diskShrink.disable' = 'TRUE'
@@ -33,7 +30,10 @@ $DCMHash = @{
 	'isolation.tools.dnd.disable' = 'TRUE'
 	'isolation.tools.setGUIOptions.enable' = 'FALSE'
 	'isolation.tools.paste.disable' = 'TRUE'
+	'log.keepOld' = '10'
 	'log.rotateSize' = '1024000'
+	'RemoteDisplay.vnc.enabled' = 'FALSE'
+	'tools.setInfo.sizeLimit' = '1048576'
 
 }
 
