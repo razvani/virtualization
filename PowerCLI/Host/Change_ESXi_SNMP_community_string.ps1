@@ -6,6 +6,8 @@ $CSVfileDelimiter = ','
 # CSV header:    Name
 #################################################################################
 
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+
 # Importing VMWare.VimAutomation.Core module
 Write-Host -ForegroundColor Green "`r`nImporting VMware PowerCLI module..."
 Import-Module -Name VMWare.VimAutomation.Core
