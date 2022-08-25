@@ -22,7 +22,9 @@ $ESXiHosts = Import-Csv -Path $DataFile -Delimiter $CSVfileDelimiter
 Write-Host ($ESXiHosts | Measure-Object).count "ESXi hosts to process!"
 
 
-$ESXiHostSnmp_String  = Read-Host -Prompt "`r`nInput the SNMP community string"
+# $ESXiHostSnmp_String  = Read-Host -Prompt "`r`nInput the SNMP community string" doesn't work this way. use:
+
+$ESXiHostSnmp_String  = public, cegekamonsecured, ihatesnmp, ireallydo
 
 $ESXiCredentials = Get-Credential -Message "Please enter the ESXi host account credentials"
 
