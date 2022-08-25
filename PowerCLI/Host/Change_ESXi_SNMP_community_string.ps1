@@ -24,14 +24,12 @@ Write-Host ($ESXiHosts | Measure-Object).count "ESXi hosts to process!"
 
 # $ESXiHostSnmp_String  = Read-Host -Prompt "`r`nInput the SNMP community string" doesn't work this way. use:
 
-$ESXiHostSnmp_String  = public, cegekamonsecured, ihatesnmp, ireallydo
-
 $ESXiCredentials = Get-Credential -Message "Please enter the ESXi host account credentials"
 
 ForEach ($ESXiHost in $ESXiHosts){
 	Write-Host -ForegroundColor Yellow "`r`nConnecting to" $ESXiHost.Name
     Connect-VIServer $ESXiHost.Name -Credential $ESXiCredentials
-	Get-VMHostSnmp | Set-VMHostSnmp -Enabled:$True -ReadOnlyCommunity $ESXiHostSnmp_String
+	Get-VMHostSnmp | Set-VMHostSnmp -Enabled:$True -ReadOnlyCommunity pulic, cegekamonsecured
     #Get-VMHostSnmp | Select ReadOnlyCommunities, Enabled
 	Disconnect-VIServer -Server * -Force -Confirm:$False
 }
