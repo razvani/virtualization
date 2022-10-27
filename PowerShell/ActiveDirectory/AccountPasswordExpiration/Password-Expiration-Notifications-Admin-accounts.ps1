@@ -20,7 +20,7 @@ param (
 #################################################################################################################
 # Variables
 
-$SearchBase="OU=Admins,OU=Cegeka,DC=cegekavirtual,DC=local"
+$SearchBase="OU=Administrative,DC=cegekavirtual,DC=local"
 $smtpServer="smtp.cegeka.be"
 $expireindays = 14 #number of days of soon-to-expire paswords. i.e. notify for expiring in X days (and every day until $negativedays)
 $negativedays = -1 #negative number of days (days already-expired). i.e. notify for expired X days ago
