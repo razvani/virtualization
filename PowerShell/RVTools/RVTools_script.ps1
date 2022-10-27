@@ -16,10 +16,10 @@ With this RVTools Automation script, you can start the RVTools export to xlsx fu
 
 # Parameters
 param (
-        [String]$vc, # vCenter FQDN
-	[String]$u,  # User account
-        [String]$p,  # Account encryted password
-	[String]$d   # Export directory path
+    [String]$vc, # vCenter FQDN
+    [String]$u,  # User account
+    [String]$p,  # Account encryted password
+    [String]$d   # Export directory path
 )
 
 # Set RVTools directory path
