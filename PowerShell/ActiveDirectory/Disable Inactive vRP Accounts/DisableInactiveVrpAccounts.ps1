@@ -127,7 +127,7 @@ Write-Host `Not logged on for` $xDays `days:` $counternotLoggedOnForXdays ` user
 ##############################################
 # Send mail message 
 
-$subject = "[$domain] Disabled service accounts not logged on for more than $xDays days"
+$subject = "[$domain] Disabled inactive vRP accounts not logged on for more than $xDays days"
     # Email Body Set Here, Note You can use HTML, including Images.
 
 $body="
