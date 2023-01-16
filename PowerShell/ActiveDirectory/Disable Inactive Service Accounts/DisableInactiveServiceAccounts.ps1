@@ -47,12 +47,13 @@ $exceptedUsers = Import-Csv -Path $exceptionUsersList
 # System Settings
 $textEncoding = [System.Text.Encoding]::UTF8
 $date = Get-Date -format yyyy-MM-dd
+$oneWeekAgo = (Get-Date).AddDays(-7).Date
 
 # Domain name
 $DomainName = Get-ADDomainController | Select-Object Name, Domain
 $domain = ($DomainName.Domain).split(".")[0]
 
-$users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabled -eq $true)} -Properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated, LastLogonDate
+$users = Get-ADUser -SearchBase $SearchBase -SearchScope Subtree -Filter {(Enabled -eq $true) -and (whenCreated -lt $oneWeekAgo)} -Properties sAMAccountName, displayName, PasswordNeverExpires, PasswordExpired, PasswordLastSet, EmailAddress, lastLogon, whenCreated, LastLogonDate
 
 $notLoggedOnForXdays = (get-date).adddays(-$xDays)
 
