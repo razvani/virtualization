@@ -13,15 +13,12 @@ $Error.clear()
 
 # vCenter that will be used to connect to.
 $vCenter = Read-Host -Prompt "Input vCenter FQDN or IP address"
-#$vCenter = "pocbehavcsa001.pocvirtual.local"
-#$vCenter = "sharbehavcsa003.cegekavirtual.local"
-#$vCenter = "argbehavcsa001argvirtual.local"
+
 
 # vCenter credentials
 Write-Host -ForegroundColor Green "Enter your username and password to make a connection to $vCenter"
 $vCenterCredentials = Get-Credential -Message "Enter your username name and password for $vCenter"
 
-$NoToolsRunning = "VMs_ToolsNotRunning_$(get-date -Format yyyyddmm_hhmmtt).csv"
 $sleepCounter = 1
 
 # Importing CSV file that contains the VM list.  (sample: Tier3_ACC_Servers.csv)
@@ -31,6 +28,10 @@ Write-Host -ForegroundColor Yellow "Importing CSV file $DataFile"
 $DataContent = Import-Csv -Path $DataFile -Delimiter ";"
 $DataContentCount = ($DataContent | Measure-Object).count
 $VMsCount = 1
+
+# Export file name
+$ExportFileName = $DataFile.Split('.')[0]
+$ExportFileName += "_VMwareToolsNotRunning_$(get-date -Format yyyyddmm_hhmmtt).csv"
 
 #Measure the run-time of a PowerShell script
 $StopWatch = [system.diagnostics.stopwatch]::startNew()
@@ -54,7 +55,7 @@ ForEach ($vm in $DataContent){
 			Write-host -ForegroundColor Green "Counter before sleep: $sleepCounter from 12"
 		} else {
 			Write-Host -ForegroundColor Red "Vmware tools status is" ($vmToolsStatus).Substring(10)
-			$tempVM | Select-Object Name, VMHost, PowerState, @{Label="VmToolsStatus"; Expression={($vmToolsStatus).Substring(10)}} | Export-Csv -Path $NoToolsRunning -NoTypeInformation -Append -Delimiter ";"
+			$tempVM | Select-Object Name, VMHost, PowerState, @{Label="VmToolsStatus"; Expression={($vmToolsStatus).Substring(10)}} | Export-Csv -Path $ExportFileName -NoTypeInformation -Append -Delimiter ";"
 		}
 	} else {
 		Write-Host -ForegroundColor Green "$tempVM is already Powered Off"
@@ -85,6 +86,6 @@ Write-Host  -ForegroundColor Green ("`r`nThis script took {0:N3} minutes to run.
 Write-Host -ForegroundColor Green "`r`nDone!"
 
 If ($NoToolsRunning) {
-	Write-Host -ForegroundColor Blue "`r`nCheck the export CSV file for VMs without running VMware tools: $VmwareToolsStatus"
+	Write-Host -ForegroundColor Blue "`r`nCheck the export CSV file for VMs without running VMware tools: $ExportFileName"
 }
 
