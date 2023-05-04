@@ -1,10 +1,18 @@
+# Credentials
+
+$credentials = Get-credential
+
 # Connect to vCenter
 try {
-  Connect-VIServer sharbehavcsa101.cegekavirtual.local -Credential (Get-Credential) -Alllinked
+
+  Connect-VIServer sharbehavcsa101.cegekavirtual.local -Credential $credentials -Alllinked
 }
+
 catch {
+
   Write-Error "Error connecting to vCenter: $_"
   exit
+
 }
 
 # Get the current date and time
@@ -14,7 +22,7 @@ $date = Get-Date
 $formattedDate = $date.ToString("yyyyMMddHHmm")
 
 # Build the filename using the formatted date
-$filename = "$formattedDate-HostExport.csv"
+$filename = "$formattedDate-HostExportInfo.csv"
 
 # Get a list of all ESXi hosts with SHAR in their name
 try {
@@ -40,16 +48,16 @@ foreach ($VMHost in $hosts) {
 
   # Determine the value of the datacenter property
   switch -wildcard ($VMHost.Name) {
-    "*BEHAESXDR*" { $datacenter = "HASSELT-T3" }
-    "*NLGEESXDR*" { $datacenter = "GELEEN-T3" }
     "*NLGEESX*" { $datacenter = "GELEEN" }
     "*BEHAESX*" { $datacenter = "HASSELT" }
+    "*BEHAESXDR*" { $datacenter = "HASSELT-T3" } 
+    "*NLGEESXDR*" { $datacenter = "GELEEN-T3" }
     default { $datacenter = "" }
   }
 
   # Add the host's name, memory, number of CPUs, new property value, and parent cluster to the array
   # only if it is not excluded
-  if (!($VMHost.Name -like "*upl*") -and !($VMHost.Name -like "*migtoaci*") -and !($VMHost.Parent -like "*reinstall*") -and !($VMHost.Parent -like "*TEST*")) {
+  if (!($VMHost.Name -like "*upl*") -and !($VMHost.Name -like "*migtoaci*") -and !($VMHost.Parent -like "*reinstall*") -and !($VMHost.Parent -like "*TEST*") -and !($VMHost.Parent -like "*rep*") -and !($VMHost.Parent -like "*new*")) {
     $hostInfo += [PSCustomObject]@{
       Name = $VMHost.Name
       NumCPU = $VMHost.NumCpu
@@ -63,7 +71,7 @@ foreach ($VMHost in $hosts) {
 
 # Export the array to a CSV file with the formatted date in the filename
 try {
-  $hostInfo | Export-Csv -Path "C:\Temp\$filename" -NoTypeInformation
+  $hostInfo | Export-Csv -Path "E:\PowerShellExports\$filename" -NoTypeInformation
 }
 catch {
   Write-Error "Error exporting to CSV file: $_"
