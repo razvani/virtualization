@@ -1,5 +1,5 @@
 #################################################################################
-# This script is created for configuring SNMP on multiple ESXi hosts
+# This script is created for configuring the SyslogHost on multiple ESXi hosts
 # Parameters:
 #
 # CSV file
