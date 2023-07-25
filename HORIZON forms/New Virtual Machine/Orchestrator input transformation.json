@@ -1,0 +1,120 @@
+{
+    "$merge": [
+      {
+        "organization_id": "${input.organization_id}",
+        "requester": "${input.username}",
+        "email": "${input.email}",
+        "organization": "${input.organization}",
+        "organization_cgkprimarykey": "${input.organization_cgkprimarykey}",
+        "configuration": "${input.configuration}",
+        "workorder": "${input.workorder}",
+        "environment": "${input.environment}",
+        "category": "${input.category}",
+        "role": "${input.role}",
+        "resolvergroup": "${input.resolvergroup}",
+        "preferredavailabilityzone": "${input.location.preferredavailabilityzone}",
+        "datacenter": "${input.location.datacenter}",
+        "vmtier": "${input.location.vmtier}"
+      },
+      {
+        "$if": "input.location.vmtier == 'Tier 3' || input.location.vmtier == 'Tier 2'",
+        "then": {
+          "virpci": "",
+          "virpprio": ""
+        },
+        "else": {
+          "virpci": "${input.location.virpci}",
+          "virpprio": "${input.location.virpprio}",
+          "preferredavailabilityzone": "No",
+          "availabilityzone": ""
+        }
+      },
+      {
+        "$if": "input.location.preferredavailabilityzone == 'No'",
+        "then": {
+          "$if": "input.location.datacenter == 'Hasselt'",
+          "then": {
+            "availabilityzone": "HAS-No Preference"
+          },
+          "else": {
+            "availabilityzone": "GEL-No Preference"
+          }
+        },
+        "else": {
+          "availabilityzone": "${input.location.availabilityzone}"
+        }
+      },
+      {
+        "without_os": "${input.os_configuration.without_os}"
+      },
+      {
+        "$if": "input.os_configuration.without_os == 'No'",
+        "then": {
+          "os_type": "",
+          "template": "${input.os_configuration.template_ci}"
+        },
+        "else": {
+          "template": "",
+          "os_type": "${input.os_configuration.os_type}"
+        }
+      },
+      {
+        "hostnames": {
+          "$let": {
+            "array_of_hostnames": {
+              "$flattenDeep": [
+                {
+                  "$map": {
+                    "$eval": "input.hostnames"
+                  },
+                  "each(x)": {
+                    "$eval": "x"
+                  }
+                }
+              ]
+            }
+          },
+          "in": {
+            "$eval": "join(array_of_hostnames, ', ')"
+          }
+        }
+      },
+      {
+        "vlan": "${input.vlan}",
+        "diskcounter": "${input.diskcounter}"
+      },
+      {
+        "$if": "input.diskcounter > 0",
+        "then": {
+          "disks": {
+            "$let": {
+              "array_of_disks": {
+                "$flattenDeep": [
+                  {
+                    "$map": {
+                      "$eval": "input.disks"
+                    },
+                    "each(x)": {
+                      "$eval": "x"
+                    }
+                  }
+                ]
+              }
+            },
+            "in": {
+              "$eval": "join(array_of_disks, ', ')"
+            }
+          }
+        },
+        "else": {
+          "disks": ""
+        }
+      },
+      {
+        "vram": "${input.vram}",
+        "vcpu": "${input.vcpu}",
+        "storagetier": "${input.storagetier}",
+        "vmcounter": "${input.vmcounter}"
+      }
+    ]
+  }

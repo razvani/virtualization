@@ -1,0 +1,834 @@
+{
+    "type": "object",
+    "title": "New virtual machine",
+    "description": "Deploy a new virtual machine",
+    "required": [
+      "organization",
+      "configuration",
+      "environment",
+      "category",
+      "workorder",
+      "role",
+      "resolvergroup",
+      "template_ci",
+      "vram",
+      "vcpu",
+      "storagetier",
+      "vmcounter",
+      "hostnames",
+      "diskcounter",
+      "disks",
+      "vlan"
+    ],
+    "ui:order": [
+      "organization",
+      "configuration",
+      "environment",
+      "category",
+      "workorder",
+      "servicedescription",
+      "role",
+      "resolvergroup",
+      "organization_cgkprimarykey",
+      "location",
+      "os_configuration",
+      "vram",
+      "vcpu",
+      "storagetier",
+      "vmcounter",
+      "hostnames",
+      "diskcounter",
+      "disks",
+      "vlan"
+    ],
+    "tabConfig": [
+      {
+        "tab": "customer",
+        "title": "Customer"
+      },
+      {
+        "tab": "service",
+        "title": "Service"
+      },
+      {
+        "tab": "location",
+        "title": "Location"
+      },
+      {
+        "tab": "specifications",
+        "title": "VM Specifications"
+      },
+      {
+        "tab": "vmconfiguration",
+        "title": "VM Configuration"
+      }
+    ],
+    "properties": {
+      "organization": {
+        "title": "Organization:",
+        "type": "string",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/Organization",
+          "params": {
+            "filter": [
+              "organization~%@{inputValue}%",
+              "flag_organization_inactive=0"
+            ],
+            "page": 1,
+            "sort": "+organization"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('organization')"
+          },
+          "label": {
+            "`eval": "field('organization')"
+          }
+        }
+      },
+      "configuration": {
+        "title": "Configuration:",
+        "type": "string",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/cmdb_configuration",
+          "params": {
+            "filter": [
+              "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+              "active_flag=1"
+            ],
+            "page": 1,
+            "per_page": 1000,
+            "sort": "+name"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('name')"
+          },
+          "label": {
+            "`eval": "field('name')"
+          }
+        }
+      },
+      "environment": {
+        "type": "string",
+        "title": "Environment:",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/cmdb_environment",
+          "params": {
+            "filter": [
+              "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+              "active_flag=1"
+            ],
+            "page": 1,
+            "per_page": 1000,
+            "sort": "+name"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('name')"
+          },
+          "label": {
+            "`eval": "field('name')"
+          }
+        }
+      },
+      "category": {
+        "type": "string",
+        "title": "Category:",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/rfc_categories",
+          "params": {
+            "filter": [
+              "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+              "active_flag=1"
+            ],
+            "page": 1,
+            "per_page": 1000,
+            "sort": "+category"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('category')"
+          },
+          "label": {
+            "`eval": "field('category')"
+          }
+        }
+      },
+      "workorder": {
+        "type": "string",
+        "title": "RFC Workorder:",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/cmdb_configuration",
+          "params": {
+            "filter": [
+              "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+              "name=@{configuration}",
+              "active_flag=1"
+            ],
+            "page": 1,
+            "per_page": 1000
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('workorder')"
+          },
+          "label": {
+            "`eval": "field('workorder')"
+          }
+        }
+      },
+      "servicedescription": {
+        "type": "string",
+        "title": "",
+        "default": "SHARED Virtualization Infrastructure",
+        "tab": "service",
+        "ui:help": "**More information** - [Service Description](https://portal.cegeka.com/bp/SharedServPortf/VirtualInfrastructur/Shared%20Documents/Service%20Description%20-%20Virtual%20infrastructure.docx?Web=1) & [Technical service description](https://portal.cegeka.com/bp/SharedServPortf/VirtualInfrastructur/Shared%20Documents/Technical%20Service%20Description%20-%20Virtual%20Infrastructure.docx?Web=1)",
+        "ui:disabled": true
+      },
+      "role": {
+        "type": "string",
+        "title": "Server Role:",
+        "tab": "service"
+      },
+      "resolvergroup": {
+        "type": "string",
+        "title": "Resolver group:",
+        "tab": "service",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/resolver_groups",
+          "params": {
+            "filter": [
+              "resolver_group~%@{inputValue}%",
+              "active_flag=1",
+              "organization_cgkprimarykey=656",
+              "resolver_group!_in_SSC.Virt Server Infra"
+            ],
+            "page": 1,
+            "per_page": 1000,
+            "sort": "+resolver_group"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('resolver_group')"
+          },
+          "label": {
+            "`eval": "field('resolver_group')"
+          }
+        }
+      },
+      "organization_cgkprimarykey": {
+        "title": "organization_cgkprimarykey",
+        "type": "integer",
+        "tab": "customer",
+        "ui:field": "autoComplete",
+        "ui:widget": "hidden",
+        "readOnly": true,
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/Organization",
+          "params": {
+            "filter": [
+              "organization=@{organization}",
+              "flag_organization_inactive=0"
+            ],
+            "page": 1,
+            "sort": "+organization"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('organization_cgkprimarykey')"
+          },
+          "label": {
+            "`eval": "field('organization_cgkprimarykey')"
+          }
+        }
+      },
+      "location": {
+        "title": "Availability Zone",
+        "type": "object",
+        "tab": "location",
+        "properties": {
+          "datacenter": {
+            "type": "string",
+            "title": "Datacenter:",
+            "enum": [
+              "Hasselt",
+              "Geleen"
+            ]
+          },
+          "vmtier": {
+            "title": "VM Tier:",
+            "type": "string",
+            "enum": [
+              "Tier 1",
+              "Tier 2",
+              "Tier 3"
+            ]
+          }
+        },
+        "required": [
+          "datacenter",
+          "vmtier",
+          "preferredavailabilityzone"
+        ],
+        "dependencies": {
+          "vmtier": {
+            "oneOf": [
+              {
+                "properties": {
+                  "vmtier": {
+                    "type": "string",
+                    "enum": [
+                      "Tier 1"
+                    ]
+                  },
+                  "virpci": {
+                    "title": "VIRP CI:",
+                    "type": "string",
+                    "ui:field": "autoComplete",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/VIRP_ci",
+                      "params": {
+                        "filter": [
+                          "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+                          "inactive=Active",
+                          "location~CGK.@{location.datacenter}",
+                          "cmdblocation~%.SRM.Shared.%"
+                        ],
+                        "page": 1,
+                        "per_page": 1000,
+                        "sort": "+cabinet"
+                      }
+                    },
+                    "itemMapper": {
+                      "value": {
+                        "`eval": "field('hinumber')"
+                      },
+                      "label": {
+                        "`eval": "field('VIRPName')"
+                      }
+                    }
+                  },
+                  "virpprio": {
+                    "title": "VIRP Priority:",
+                    "type": "string",
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5"
+                    ],
+                    "default": "3"
+                  },
+                  "preferredavailabilityzone": {
+                    "title": "Preferred Availability Zone:",
+                    "type": "string",
+                    "enum": [
+                      "No"
+                    ],
+                    "default": "No"
+                  }
+                },
+                "required": [
+                  "vmtier",
+                  "virpci",
+                  "virpprio"
+                ]
+              },
+              {
+                "properties": {
+                  "vmtier": {
+                    "type": "string",
+                    "enum": [
+                      "Tier 2"
+                    ]
+                  },
+                  "preferredavailabilityzone": {
+                    "title": "Preferred Availability Zone:",
+                    "type": "string",
+                    "ui:help": "**The option is not available for Tier 1 VMs**",
+                    "enum": [
+                      "No",
+                      "Yes"
+                    ],
+                    "default": "No"
+                  }
+                },
+                "dependencies": {
+                  "preferredavailabilityzone": {
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "preferredavailabilityzone": {
+                            "enum": [
+                              "No"
+                            ]
+                          },
+                          "datacenter": {
+                            "enum": [
+                              "Hasselt",
+                              "Geleen"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "preferredavailabilityzone": {
+                            "enum": [
+                              "Yes"
+                            ]
+                          },
+                          "datacenter": {
+                            "enum": [
+                              "Hasselt",
+                              "Geleen"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "availabilityzone"
+                        ],
+                        "dependencies": {
+                          "datacenter": {
+                            "oneOf": [
+                              {
+                                "properties": {
+                                  "datacenter": {
+                                    "enum": [
+                                      "Hasselt"
+                                    ]
+                                  },
+                                  "availabilityzone": {
+                                    "type": "string",
+                                    "title": "Availability zone:",
+                                    "enum": [
+                                      "HAZ-AV1",
+                                      "HAS-AV2"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "properties": {
+                                  "datacenter": {
+                                    "enum": [
+                                      "Geleen"
+                                    ]
+                                  },
+                                  "availabilityzone": {
+                                    "type": "string",
+                                    "title": "Availability zone:",
+                                    "enum": [
+                                      "GEL-AV1",
+                                      "GEL-AV2"
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "vmtier": {
+                    "type": "string",
+                    "enum": [
+                      "Tier 3"
+                    ]
+                  },
+                  "preferredavailabilityzone": {
+                    "title": "Preferred Availability Zone:",
+                    "ui:help": "**The option is not available for Tier 1 VMs**",
+                    "type": "string",
+                    "enum": [
+                      "No",
+                      "Yes"
+                    ],
+                    "default": "No"
+                  }
+                },
+                "dependencies": {
+                  "preferredavailabilityzone": {
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "preferredavailabilityzone": {
+                            "enum": [
+                              "No"
+                            ]
+                          },
+                          "datacenter": {
+                            "enum": [
+                              "Hasselt",
+                              "Geleen"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "preferredavailabilityzone": {
+                            "enum": [
+                              "Yes"
+                            ]
+                          },
+                          "datacenter": {
+                            "enum": [
+                              "Hasselt",
+                              "Geleen"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "availabilityzone"
+                        ],
+                        "dependencies": {
+                          "datacenter": {
+                            "oneOf": [
+                              {
+                                "properties": {
+                                  "datacenter": {
+                                    "enum": [
+                                      "Hasselt"
+                                    ]
+                                  },
+                                  "availabilityzone": {
+                                    "type": "string",
+                                    "title": "Availability zone:",
+                                    "enum": [
+                                      "HAZ-AZ1",
+                                      "HAS-AZ2"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "properties": {
+                                  "datacenter": {
+                                    "enum": [
+                                      "Geleen"
+                                    ]
+                                  },
+                                  "availabilityzone": {
+                                    "type": "string",
+                                    "title": "Availability zone:",
+                                    "enum": [
+                                      "GEL-AZ1",
+                                      "GEL-AZ2"
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "os_configuration": {
+        "title": "",
+        "type": "object",
+        "tab": "specifications",
+        "properties": {
+          "without_os": {
+            "title": "Virtual Machine without OS:",
+            "type": "string",
+            "enum": [
+              "No",
+              "Yes"
+            ],
+            "default": "No"
+          }
+        },
+        "required": [
+          "without_os"
+        ],
+        "dependencies": {
+          "without_os": {
+            "oneOf": [
+              {
+                "properties": {
+                  "without_os": {
+                    "type": "string",
+                    "enum": [
+                      "No"
+                    ]
+                  },
+                  "template_ci": {
+                    "title": "Template:",
+                    "type": "string",
+                    "ui:field": "autoComplete",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/Templates_ci",
+                      "params": {
+                        "page": 1,
+                        "sort": "-os",
+                        "per_page": 1000
+                      }
+                    },
+                    "itemMapper": {
+                      "value": {
+                        "`eval": "field('hinumber')"
+                      },
+                      "label": {
+                        "`eval": "combineFields('os','hostname')"
+                      }
+                    }
+                  },
+                  "template_disk_size_info": {
+                    "title": "Template OS disk size (GB):",
+                    "type": "string",
+                    "ui:field": "info",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/Templates_ci",
+                      "params": {
+                        "page": 1,
+                        "filter": [
+                          "hinumber=@{os_configuration.template_ci}"
+                        ]
+                      },
+                      "field": "TotalDiskSize"
+                    }
+                  },
+                  "template_vCPU_info": {
+                    "title": "Template vCPU:",
+                    "type": "number",
+                    "ui:field": "info",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/Templates_ci",
+                      "params": {
+                        "page": 1,
+                        "filter": [
+                          "hinumber=@{os_configuration.template_ci}",
+                          "status=In use"
+                        ]
+                      },
+                      "field": "CPU_Number"
+                    }
+                  },
+                  "template_vRAM_info": {
+                    "title": "Template vRAM (GB):",
+                    "type": "number",
+                    "ui:field": "info",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/Templates_ci",
+                      "params": {
+                        "page": 1,
+                        "filter": [
+                          "hinumber=@{os_configuration.template_ci}"
+                        ]
+                      },
+                      "field": "RAM"
+                    }
+                  },
+                  "template_ci_info": {
+                    "title": "Template CI:",
+                    "type": "string",
+                    "ui:field": "info",
+                    "apiConfig": {
+                      "url": "/api/reporting/customer_autocomplete/Templates_ci",
+                      "params": {
+                        "page": 1,
+                        "filter": [
+                          "hinumber=@{os_configuration.template_ci}"
+                        ]
+                      },
+                      "field": "hinumber"
+                    }
+                  }
+                },
+                "required": [
+                  "template_ci"
+                ]
+              },
+              {
+                "properties": {
+                  "without_os": {
+                    "type": "string",
+                    "enum": [
+                      "Yes"
+                    ]
+                  },
+                  "os_type": {
+                    "title": "OS type:",
+                    "type": "string",
+                    "ui:field": "autoComplete",
+                    "tab": "specifications",
+                    "apiConfig": {
+                      "url": "/api/reporting/global_autocomplete/VMware_Vim_VmGuestOsIdentifier",
+                      "params": {
+                        "page": 1,
+                        "sort": "+FullName",
+                        "per_page": 100
+                      }
+                    },
+                    "itemMapper": {
+                      "value": {
+                        "`eval": "field('ID')"
+                      },
+                      "label": {
+                        "`eval": "combineFields('FullName','ID')"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "os_type"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "vmcounter": {
+        "title": "Number of VMs:",
+        "type": "integer",
+        "tab": "specifications",
+        "ui:help": "Maxim 10 VMs allowed with a single request!",
+        "minimum": 1,
+        "maximum": 10,
+        "default": 1
+      },
+      "hostnames": {
+        "$if": "@{vmcounter}",
+        "then": {
+          "title": "Hostname: ",
+          "type": "array",
+          "tab": "specifications",
+          "ui:help": "Make sure you have the exact number of hostnames as the above Number of VMs !",
+          "minItems": {
+            "$eval": "input.vmcounter"
+          },
+          "maxItems": {
+            "$eval": "input.vmcounter"
+          },
+          "ui:options": {
+            "orderable": false
+          },
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "default": "hostname"
+          }
+        }
+      },
+      "vram": {
+        "type": "integer",
+        "title": "vRAM (GB):",
+        "tab": "vmconfiguration",
+        "ui:help": "Maxim 128 GB. Contact Virtualization team if more are needed.",
+        "minimum": 1,
+        "maximum": 128,
+        "default": 1
+      },
+      "vcpu": {
+        "type": "integer",
+        "title": "vCPU:",
+        "tab": "vmconfiguration",
+        "ui:help": "Maxim 16 vCPU. Contact Virtualization team if more are needed.",
+        "minimum": 1,
+        "maximum": 16,
+        "default": 1
+      },
+      "storagetier": {
+        "type": "string",
+        "title": "Storage Tier:",
+        "default": "Standard",
+        "ui:help": "A VM cannot have multiple disks from multiple storage tiers.",
+        "enum": [
+          "Standard",
+          "Performance"
+        ],
+        "tab": "vmconfiguration"
+      },
+      "diskcounter": {
+        "title": "Number of additional Disks:",
+        "type": "integer",
+        "ui:help": "Maxim of 15 **additional** disks beside OS disk.",
+        "tab": "vmconfiguration",
+        "maximum": 15,
+        "default": 0
+      },
+      "disks": {
+        "$if": "@{diskcounter}",
+        "then": {
+          "title": "Disk(s) size (GB): ",
+          "type": "array",
+          "tab": "vmconfiguration",
+          "ui:help": "Make sure you have the exact number disk sizes as the above Number of Disks !",
+          "minItems": {
+            "$eval": "input.diskcounter"
+          },
+          "maxItems": {
+            "$eval": "input.diskcounter"
+          },
+          "ui:options": {
+            "orderable": false
+          },
+          "items": {
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 4096,
+            "default": 10
+          }
+        }
+      },
+      "vlan": {
+        "type": "string",
+        "title": "VLAN ID:",
+        "tab": "vmconfiguration",
+        "ui:field": "autoComplete",
+        "apiConfig": {
+          "url": "/api/reporting/customer_autocomplete/vlan",
+          "params": {
+            "filter": [
+              "organization_cgkprimarykey=@{organization_cgkprimarykey}",
+              "active_flag=1"
+            ],
+            "page": 1,
+            "per_page": 1000,
+            "sort": "+name"
+          }
+        },
+        "itemMapper": {
+          "value": {
+            "`eval": "field('name')"
+          },
+          "label": {
+            "`eval": "field('name')"
+          }
+        }
+      }
+    }
+  }
