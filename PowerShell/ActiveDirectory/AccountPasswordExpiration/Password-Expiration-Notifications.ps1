@@ -135,9 +135,9 @@ foreach ($user in $users) {
     <p>Dear $dName,<br></p>
 
     <p>Please be informed that your account password for <b>$domain\$sName</b> $messageDays. You will not be able to access <a href='https://cloud.cegeka.com/'>https://cloud.cegeka.com</a> virtulization infrastructure until you will change your password.</p>
-    <p>You can change your password via <a href='https://csc.cegeka.com/RequestCenter/website/CSC/application/search.html?route=search&q=Reset+Password+for+vCenter+User+Account+&tkq=on'>CSC Order Portal</a><br><br></p>
+    <p>You can change your password via HORIZON - <a href='https://horizon.cegeka.com/service-portfolio/27830-cegeka_cloud_reset_password'>Reset password for vCenter User Account (Cegeka Cloud)</a><br><br></p>
     
-    <p>This is an automatic email. If any issues please contact SSC.Virtualization team via a USD ticket.<br></p>
+    <p>This is an automatic email. If any issues please contact SSC.Virtualization team via <a href='https://horizon.cegeka.com/create-ticket'>Horizon</a> ticket.<br></p>
 
     <p>Kind regards,<br>
     Virtualization team<br>

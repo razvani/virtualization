@@ -135,9 +135,9 @@ foreach ($user in $users) {
     <p>Dear $dName,<br></p>
 
     <p>Please be informed that your <b>vRP</b> account password for <b>$domain\$sName</b> $messageDays. You will not be able to access <a href='https://cloud.cegeka.com/'>https://cloud.cegeka.com</a> virtulization infrastructure until you will change your password.</p>
-    <p>You can create a request in USD for SSC.Virtualization team to reset your vRP account password.</p>
+    <p>You can create a request in <a href='https://horizon.cegeka.com/create-ticket'>Horizon</a> for SSC.Virtualization team to reset your vRP account password.</p>
     
-    <p>This is an automatic email. If any issues please contact SSC.Virtualization team via a USD ticket.<br></p>
+    <p>This is an automatic email. If any issues please contact SSC.Virtualization team via <a href='https://horizon.cegeka.com/create-ticket'>Horizon</a> ticket.<br></p>
 
     <p>Kind regards,<br>
     Virtualization team<br>
