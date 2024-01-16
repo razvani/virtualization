@@ -29,6 +29,7 @@ $exceptionUsersList = "DisableInactiveUserAccounts_ExceptionsList.csv"  # The ex
 #################################################################################################################
 
 Import-Module ActiveDirectory
+whoami
 
 # Set location the same as the folder where the current script is located
 Set-Location $PSScriptRoot

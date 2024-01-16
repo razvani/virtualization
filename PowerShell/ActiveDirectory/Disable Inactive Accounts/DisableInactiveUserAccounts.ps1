@@ -29,6 +29,7 @@ $exceptionUsersList = "DisableInactiveUserAccounts_ExceptionsList.csv"  # The ex
 #################################################################################################################
 
 Import-Module ActiveDirectory
+whoami
 
 # Credentials from parameters
 if ($u) {
