@@ -5,7 +5,7 @@ $credentials = Get-credential
 # Connect to vCenter
 try {
 
-  Connect-VIServer sharbehavcsa101.cegekavirtual.local -Credential $credentials -Alllinked
+  Connect-VIServer vcenter.domain.corp -Credential $credentials -Alllinked
 }
 
 catch {
@@ -57,7 +57,7 @@ foreach ($VMHost in $hosts) {
 
   # Add the host's name, memory, number of CPUs, new property value, and parent cluster to the array
   # only if it is not excluded
-  if (!($VMHost.Name -like "*upl*") -and !($VMHost.Name -like "*migtoaci*") -and !($VMHost.Parent -like "*reinstall*") -and !($VMHost.Parent -like "*TEST*") -and !($VMHost.Parent -like "*rep*") -and !($VMHost.Parent -like "*new*")) {
+  if (!($VMHost.Name -like "*upl*") -and !($VMHost.Name -like "*migtoaci*") -and !($VMHost.Parent -like "*install*") -and !($VMHost.Parent -like "*TEST*") -and !($VMHost.Parent -like "*rep*") -and !($VMHost.Parent -like "*new*")) {
     $hostInfo += [PSCustomObject]@{
       Name = $VMHost.Name
       NumCPU = $VMHost.NumCpu
